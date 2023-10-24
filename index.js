@@ -16,12 +16,22 @@ log(" Домашнее задание js-train-20");
 // Створюємо функцію конструктор Vehicle.
 function Vehicle(brand, model, year, mileage) {
   //  Записуєм в this.brand значення аргументу brand, в this.model значення аргументу model і так далі зі всіми аргументами
+  this.brand = brand;
+  this.model = model;
+  this.year = year;
+  this.mileage = mileage;
 }
 
 // Рядковому представленю Vehicle призначаємо функцію яка повертає рядок: <brand> <model> <year>
-
+Vehicle.toString = function () {
+  //   log(`${this.brand}, ${this.model}, ${this.year}`);
+  return `${this.brand}, ${this.model}, ${this.year}`;
+};
 // valueOf - це метод, який використовується JavaScript для конвертації об'єкта в примітивне значення.
 // Ми перевизначаємо його тут, щоб він повертав this.mileage.
+Vehicle.valueOf = function () {
+  return this.mileage;
+};
 
 /*
  * Функція конструктор: Car
@@ -40,16 +50,29 @@ function Vehicle(brand, model, year, mileage) {
 //Створюємо Car - це ще один конструктор, який наслідує властивості і методи з Vehicle за допомогою функції apply.
 function Car(brand, model, year, mileage, fuelType, speed) {
   // Викликаємо конструктор Vehicle за допомогою apply, передаємо в нього this, [brand, model, year, mileage].
-  //  Записуєм в this.fuelType значення аргументу fuelType, в this.speed значення аргументу speed
+  Vehicle.apply(this, [brand, model, year, mileage]);
+
+  this.fuelType = fuelType; //  Записуєм в this.fuelType значення аргументу fuelType
+  this.speed = speed; // Записуєм в this.speed значення аргументу speed
 }
 
 // Ми можемо перевизначити методи з Vehicle в Car.
 // Рядковому представленю прототипу Car призначаємо функцію яка повертає рядок: <brand> <model> <year> - <fuelType>.
+Car.prototype.toString = function () {
+  return `${this.brand} ${this.model} ${this.year} - ${this.fuelType}`;
+};
 
 // Cтворюємо метод accelerate для прискорення швидкості прототипу Car, збільшує this.speed на передане число та виводить рядок в консоль: Автомобіль <brand> <model> прискорився до швидкості <speed> км/год
+Car.prototype.accelerate = function (x) {
+  car.speed += x;
+  return `Автомобіль ${car.brand} ${car.model} прискорився до швидкості ${car.speed} км/год`;
+};
 
 // Метод brake для гальмування прототипу Car,зменшує this.speed на передане число та виводить рядок в консоль в консоль: Автомобіль <brand> <model> зменшив до швидкості <speed> км/год
-
+Car.prototype.brake = function (n) {
+  car.speed -= n;
+  return `Автомобіль ${car.brand} ${car.model} зменшив до швидкості ${car.speed} км/год`;
+};
 // Створюємо новий екземпляр об'єкта Car
 /*
  * Екземпляр об'єкту: Car
@@ -65,11 +88,18 @@ function Car(brand, model, year, mileage, fuelType, speed) {
  * | speed        |  0                  |
  */
 
+let car = new Car("Audi", "A6", 2018, 30000, "Petrol", 0);
+// log(car);
+
 // Викличемо функції toString та valueOf об'єкта car
+log(car.toString());
+log(car.valueOf());
 
 // Використовуємо методи для прискорення та передаємо 50
+log(Car.prototype.accelerate(50));
 
 // Використовуємо методи для гальмування та передаємо 20
+log(Car.prototype.brake(20));
 
 /*
  * Функція конструктор Truck
@@ -105,12 +135,46 @@ function Truck(
   weight
 ) {
   // Викликаємо Vehicle.call та передаємо в нього: this, brand, model, year, mileage
+  Vehicle.call(this, brand, model, year, mileage);
   //  Записуєм в this.color значення аргументу color, в this.engineType значення аргументу engineType і так далі зі всіми аргументами
+  this.color = color;
+  this.engineType = engineType;
+  this.towingCapacity = towingCapacity;
+  this.fuelType = fuelType;
+  this.transmissionType = transmissionType;
+  this.doors = doors;
+  this.weight = weight;
 }
 
 // Додатковий метод specific для прототипу Trucks, примає число якщо воно більше towingCapacity виводить рядок в консоль: Навантаження занадто важке для буксирування, якщо ні то рядок Тягнення навантаження...
-
+Truck.prototype.specific = function (tow) {
+  //   log(tow);
+  //   log(myTruck.towingCapacity);
+  if (tow > myTruck.towingCapacity) {
+    return `Навантаження занадто важке для буксирування`;
+  } else {
+    return `Тягне навантаження...`;
+  }
+};
 // Створюємо новий екземпляр об'єкта Truck
+let myTruck = new Truck(
+  "Toyota",
+  "Tundra",
+  2019,
+  20000,
+  "Red",
+  "V8",
+  10000,
+  "Gasoline",
+  "Automatic",
+  4,
+  5600
+);
+// log("towingCapacity", myTruck.towingCapacity);
+
+// log("toyotaTruck", toyotaTruck);
+// log("myTruck", myTruck);
+
 /*
  * Екземпляр об'єкту: myTruck
  * Властивості:
@@ -131,8 +195,10 @@ function Truck(
  */
 
 // Викликаємо метод tow з вагою меншою за towingCapacity
+log(Truck.prototype.specific(5000));
 
 // Викликаємо метод tow з вагою більшою за towingCapacity
+log(Truck.prototype.specific(15000));
 
 // Додаємо метод drive для прототипу Car, який збільшує kilometers на передане число, та виводить Подорожуємо <kilometers> кілометрів у <brand> <model>.
 
